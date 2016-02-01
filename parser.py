@@ -8,8 +8,10 @@ import httplib2
 import re
 import operator
 import datetime
+import ipaddress
 
 http_client = httplib2.Http(".cache")
+
 
 def httpget_plaintxt(url):
     """
@@ -35,17 +37,50 @@ def parse_indextxt_line(line):
     キー文字列と値の対応は以下のとおり。
     'ch_name': チャンネル名
     'channel_id': チャンネル固有のID
-    'ipaddr': 配信者のIPアドレスとポート
+    'ipaddr': 配信者のIPアドレス
+    'ipport': 配信者が使用しているポート
     'contact_url': コンタクトURL
     'genre': ジャンル
     'detail': 詳細(index.txtではhttpでの文字指定がされています)
     'listener': リスナー数(負の値あるいはNoneを取ることがあります)
     'relay': リレー数(負の値あるいはNoneを取ることがあります)
-    'bit_rate': ビットレート[kbps](数値)
+    'bitrate': ビットレート[kbps](数値)
     'type': 配信コンテナの種別(FLV, MKV, WMVなど)
     'track_artist': トラックアーティスト
     'track_album': トラックアルバム
+    'track_title': トラックタイトル
     'track_contacturl': トラックコンタクトURL
     'uptime': 配信時間(datetime.timedelta)
     'comment': コメント
     """
+    # 使用する正規表現
+    ipaddr_regex = re.compile(r"(?P<addr>.+):(?P<port>.+)")
+    uptime_regex = re.compile(r"(?P<hour>.+):(?P<min>.+)")
+    # 項目の分割
+    splited = str(line).split("<>")
+    # 分割数確認
+    if not len(splited) == 19:
+        raise ValueError("Invalid data")
+    # 結果
+    result = dict()
+    result['ch_name'] = str(splited[0])
+    result['channel_id'] = str(splited[1])
+    ipaddr_match = ipaddr_regex.search(splited[2])
+    result['ipaddr'] = ipaddress.ip_address(ipaddr_match.group("addr"))
+    result['ipport'] = int(ipaddr_match.group("port"))
+    result['contact_url'] = str(splited[3])
+    result['genre'] = str(splited[4])
+    result['detail'] = str(splited[5])
+    result['listener'] = int(splited[6])
+    result['relay'] = int(splited[7])
+    result['bitrate'] = int(splited[8])
+    result['type'] = str(splited[9])
+    result['track_artist'] = str(splited[10])
+    result['track_album'] = str(splited[11])
+    result['track_title'] = str(splited[12])
+    result['track_contacturl'] = str(splited[13])
+    uptime_match = uptime_regex.search(splited[15])
+    result['uptime'] = datetime.timedelta(minutes=int(uptime_match.group("min")), hours=int(uptime_match.group("hour")))
+    result['comment'] = str(splited[17])
+    # 戻り値
+    return result
