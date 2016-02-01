@@ -1,0 +1,2 @@
+# pecachs_aggregate
+PeCaのチャンネルリストを集計するためのスクリプトです。
