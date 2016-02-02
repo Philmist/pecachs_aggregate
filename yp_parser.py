@@ -22,11 +22,11 @@ def httpget_plaintxt(url):
     @retval 文字列(str)
     """
     (headers, content) = http_client.request(url, "GET")
-    if "text/plain" not in headers["Content-Type"]:
-        raise ValueError("Content-type is not text/plain")
+    if "text/plain" not in headers["content-type"]:
+        raise ValueError("content-type is not text/plain")
     result = []
-    encoding_match = re.search(r"charset=(?P<charset>\S+)", headers["Content-Type"])
-    encoding_string = re.group("charset")
+    encoding_match = re.search(r"charset=(?P<charset>\S+)", headers["content-type"])
+    encoding_string = encoding_match.group("charset")
     return content.decode(encoding_string)
 
 
@@ -66,8 +66,12 @@ def parse_indextxt_line(line):
     result['ch_name'] = str(splited[0])
     result['channel_id'] = str(splited[1])
     ipaddr_match = ipaddr_regex.search(splited[2])
-    result['ipaddr'] = ipaddress.ip_address(ipaddr_match.group("addr"))
-    result['ipport'] = int(ipaddr_match.group("port"))
+    if ipaddr_match is not None:
+        result['ipaddr'] = ipaddress.ip_address(ipaddr_match.group("addr"))
+        result['ipport'] = int(ipaddr_match.group("port"))
+    else:
+        result['ipaddr'] = None
+        result['ipport'] = None
     result['contact_url'] = str(splited[3])
     result['genre'] = str(splited[4])
     result['detail'] = str(splited[5])
@@ -80,7 +84,10 @@ def parse_indextxt_line(line):
     result['track_title'] = str(splited[12])
     result['track_contacturl'] = str(splited[13])
     uptime_match = uptime_regex.search(splited[15])
-    result['uptime'] = datetime.timedelta(minutes=int(uptime_match.group("min")), hours=int(uptime_match.group("hour")))
+    if uptime_match is not None:
+        result['uptime'] = datetime.timedelta(minutes=int(uptime_match.group("min")), hours=int(uptime_match.group("hour")))
+    else:
+        result['uptime'] = None
     result['comment'] = str(splited[17])
     # 戻り値
     return result
