@@ -1,3 +1,2 @@
-rakutenma
 httplib2
 
