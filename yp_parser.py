@@ -10,6 +10,7 @@ import operator
 import datetime
 import ipaddress
 import pathlib
+from xml.sax.saxutils import unescape
 
 http_client = httplib2.Http(".cache")
 
@@ -75,7 +76,7 @@ def parse_indextxt_line(line):
         result['ipport'] = None
     result['contact_url'] = str(splited[3])
     result['genre'] = str(splited[4])
-    result['detail'] = str(splited[5])
+    result['detail'] = str(unescape(splited[5]))
     result['listener'] = int(splited[6])
     result['relay'] = int(splited[7])
     result['bitrate'] = int(splited[8])
