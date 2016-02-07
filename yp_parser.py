@@ -3,13 +3,10 @@
 index.txtで色々するモジュールです。
 """
 
-import socket
 import httplib2
 import re
-import operator
 import datetime
 import ipaddress
-import pathlib
 from xml.sax.saxutils import unescape
 
 http_client = httplib2.Http(".cache")
@@ -26,8 +23,8 @@ def httpget_plaintxt(url):
     (headers, content) = http_client.request(url, "GET")
     if "text/plain" not in headers["content-type"]:
         raise ValueError("content-type is not text/plain")
-    result = []
-    encoding_match = re.search(r"charset=(?P<charset>\S+)", headers["content-type"])
+    encoding_match = re.search(r"charset=(?P<charset>\S+)",
+                               headers["content-type"])
     encoding_string = encoding_match.group("charset")
     return content.decode(encoding_string)
 
@@ -87,7 +84,10 @@ def parse_indextxt_line(line):
     result['track_contacturl'] = str(splited[13])
     uptime_match = uptime_regex.search(splited[15])
     if uptime_match is not None:
-        result['uptime'] = datetime.timedelta(minutes=int(uptime_match.group("min")), hours=int(uptime_match.group("hour")))
+        result['uptime'] = datetime.timedelta(
+            minutes=int(uptime_match.group("min")),
+            hours=int(uptime_match.group("hour"))
+            )
     else:
         result['uptime'] = None
     result['comment'] = str(splited[17])

@@ -3,9 +3,8 @@
 詳細などを分割するモジュールです。
 """
 
-import pathlib
 import json
-import natto
+
 
 class game_searcher(object):
     """
@@ -25,12 +24,14 @@ class game_searcher(object):
         if not isinstance(self._data, dict):
             raise ValueError("Given json data is not valid")
         self.conv_dict = dict()
-        for k,v in self._orig_data.items():
+        for k, v in self._orig_data.items():
             self.conv_dict[v] = k
 
     def _search_group_from_sentence(self, sentence):
         """
         渡された文から分類のリストを返します。
         """
-        result = [ self.conv_dict[k] for k in self.conv_dict.keys() if k in sentence ]
+        result = [self.conv_dict[k]
+                  for k in self.conv_dict.keys()
+                  if k in sentence]
         return result
