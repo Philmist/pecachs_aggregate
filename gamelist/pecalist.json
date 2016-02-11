@@ -2,5 +2,8 @@
         "League of Legends": ["LoL", "lol"],
         "ドラゴンクエストX": ["DQX", "dqx", "ドラゴンクエストX"],
         "Rabi-Ribi": ["Rabi-Ribi"],
-        "XCOM2": ["xcom2", "XCOM2"]
+        "XCOM2": ["xcom2", "XCOM2"],
+        "Splatoon": ["スプラトゥーン", "Splatoon"],
+        "艦隊これくしょん": ["艦これ", "艦隊これくしょん"],
+        "Fallout4": ["Fallout4", "FO4", "FallOut4"]
 }

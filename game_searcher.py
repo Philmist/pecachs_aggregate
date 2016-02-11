@@ -22,11 +22,12 @@ class game_searcher(object):
         {"分類1": ["単語1", "単語2", ...], "分類2": [ ... ], ... }
         """
         self._orig_data = json.load(jsonfp)
-        if not isinstance(self.jsonfp, dict):
+        if not isinstance(self._orig_data, dict):
             raise ValueError("Given json data is not valid")
         self.conv_dict = dict()
         for k, v in self._orig_data.items():
-            self.conv_dict[v] = k
+            for i in v:
+                self.conv_dict[i] = k
 
     def _search_group_from_sentence(self, sentence):
         """
