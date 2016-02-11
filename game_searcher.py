@@ -6,7 +6,7 @@
 import json
 
 
-class game_searcher(object):
+class GameSearcher(object):
 
     """
     渡されたリストの中からある特定の単語が含まれているかどうかを
@@ -29,7 +29,7 @@ class game_searcher(object):
             for i in v:
                 self.conv_dict[i] = k
 
-    def _search_group_from_sentence(self, sentence):
+    def search_group_from_sentence(self, sentence):
         """
         渡された文から分類のリストを返します。
         """
