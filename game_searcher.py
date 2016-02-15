@@ -4,6 +4,7 @@
 """
 
 import json
+import zenhan
 
 
 class GameSearcher(object):
@@ -33,6 +34,8 @@ class GameSearcher(object):
         """
         渡された文から分類のリストを返します。
         """
+        sentence = zenhan.h2z(sentence, 4)
+        sentence = zenhan.z2h(sentence, 3)
         result = [self.conv_dict[k]
                   for k in self.conv_dict.keys()
                   if k in sentence]
