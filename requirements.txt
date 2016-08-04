@@ -1,3 +1,4 @@
-rakutenma
 httplib2
 zenhan
+numpy
+pandas
