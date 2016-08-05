@@ -35,13 +35,13 @@ def parse_filename(filename):
             ]
     """
     match = FILE_PATTERN.search(filename)
-    result = [
+    result = {
         "YP": match.group("YP"),
         "YEAR": int(match.group("YEAR")),
         "MONTH": int(match.group("MONTH")),
         "HOUR": int(match.group("HOUR")),
         "MINUTE": int(match.group("MINUTE"))
-        ]
+        }
     return result
 
 if __name__ == "__main__":
