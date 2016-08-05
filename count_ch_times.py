@@ -26,13 +26,13 @@ def parse_filename(filename):
     """ファイル名を解析して、各種情報を返します。
 
     filename: 解析したいファイル名
-    戻り値:  [
+    戻り値:  {
                 "YP": YP名,
                 "YEAR": 年(数値),
                 "MONTH": 月(数値),
                 "HOUR": 時(24時間制 数値),
                 "MINUTE": 分(数値)
-            ]
+            }
     """
     match = FILE_PATTERN.search(filename)
     result = {
