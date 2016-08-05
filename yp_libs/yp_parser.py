@@ -30,8 +30,7 @@ def httpget_plaintxt(url):
 
 
 def parse_indextxt_line(line):
-    """
-    渡されたindex.txt由来のlineを分割して辞書として返します。
+    """渡されたindex.txt由来のlineを分割して辞書として返します。
 
     キー文字列と値の対応は以下のとおり。
     'ch_name': チャンネル名
