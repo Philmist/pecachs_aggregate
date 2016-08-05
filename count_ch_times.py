@@ -35,7 +35,7 @@ def parse_filename(filename):
     match = FILE_PATTERN.search(filename)
     result = {
         "YP": match.group("YP"),
-        "DATETIME": datetime.datetime(
+        "DATETIME": datetime(
             int("20" + match.group("YEAR")),
             int(match.group("MONTH")),
             int(match.group("DAY")),
