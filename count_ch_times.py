@@ -4,6 +4,7 @@
 チャンネルの配信時間(1時間単位)を集計するスクリプトです。
 """
 
+from datetime import datetime
 import fileinput
 import re
 
@@ -27,21 +28,21 @@ def parse_filename(filename):
 
     filename: 解析したいファイル名
     戻り値:  {
-                "YP": YP名,
-                "YEAR": 年(数値),
-                "MONTH": 月(数値),
-                "HOUR": 時(24時間制 数値),
-                "MINUTE": 分(数値)
+                "YP": YP名(str),
+                "DATETIME": 日時(datetime)
             }
     """
     match = FILE_PATTERN.search(filename)
     result = {
         "YP": match.group("YP"),
-        "YEAR": int(match.group("YEAR")),
-        "MONTH": int(match.group("MONTH")),
-        "HOUR": int(match.group("HOUR")),
-        "MINUTE": int(match.group("MINUTE"))
-        }
+        "DATETIME": datetime.datetime(
+            int("20" + match.group("YEAR")),
+            int(match.group("MONTH")),
+            int(match.group("DAY")),
+            int(match.group("HOUR")),
+            int(match.group("MINUTE"))
+        )
+    }
     return result
 
 if __name__ == "__main__":
