@@ -7,7 +7,6 @@
 from datetime import datetime
 import fileinput
 import json
-from operator import attrgetter
 import re
 
 from yp_libs.yp_parser import parse_indextxt_line
@@ -24,6 +23,7 @@ _                   # 区切り
 (?P<MINUTE>\d{2})   # 分(2桁)
 .*                  # サフィックス(拡張子等)
 """, re.VERBOSE)
+
 
 def parse_filename(filename):
     """ファイル名を解析して、各種情報を返します。
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # 順番に開いていく
     with fileinput.input() as f:
         # 変数を初期化
-        current_file_datetime = datetime()
+        current_file_datetime = datetime.today()
         # 順番に行を読みこんでいくけれど…
         for line in f:
             # もし読みこんだ行が標準入力からだったのなら
@@ -76,12 +76,14 @@ if __name__ == "__main__":
                 # 新しくリストを作っておく
                 ch_list[bcst['ch_name']] = list()
             # リストに配信を追加する
-            bcst["datetime"] = current_file_datetime
+            bcst["datetime"] = current_file_datetime["DATETIME"]
+            bcst["yp"] = current_file_datetime["YP"]
             ch_list[bcst['ch_name']].append(bcst)
 
     # チャンネルを時間順にソート
     for k in ch_list.keys():
-        ch_list[k] = sorted(ch_list[k], key=attrgetter("datetime"))
+        ch_list[k].sort(key=lambda x: x["datetime"],
+                        reverse=True)
 
     # 結果をJSONとして出力する
     print(json.dumps(ch_list, indent=2))
