@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 """
 配信のファイル一覧をとりこみ、
-チャンネルの配信時間(1時間単位)を集計するスクリプトです。
+チャンネルの配信履歴を集計するスクリプトです。
+
+出力はカレントディレクトリに'count_ch_times.pickle'として
+書きだされます。
 """
 
 from datetime import datetime
 import fileinput
-import json
+import pickle
 import re
 
 from yp_libs.yp_parser import parse_indextxt_line
@@ -85,5 +88,6 @@ if __name__ == "__main__":
         ch_list[k].sort(key=lambda x: x["datetime"],
                         reverse=True)
 
-    # 結果をJSONとして出力する
-    print(json.dumps(ch_list, indent=2))
+    # 結果を出力する
+    with open("count_ch_times.pickle", "wb") as f:
+        pickle.dump(ch_list, f, 4)
