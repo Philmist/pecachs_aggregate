@@ -2,15 +2,16 @@
 """
 配信のファイル一覧をとりこみ、
 チャンネルの配信履歴を集計するスクリプトです。
-
-出力はカレントディレクトリに'count_ch_times.pickle'として
-書きだされます。
 """
 
 from datetime import datetime
 import fileinput
+from glob import glob
+import numpy as np
+import pandas as pd
 import pickle
 import re
+import sys
 
 from yp_libs.yp_parser import parse_indextxt_line
 
@@ -55,7 +56,11 @@ if __name__ == "__main__":
     ch_list = dict()
     # コマンドラインからファイルの一覧を取りこんで
     # 順番に開いていく
-    with fileinput.input() as f:
+    # see: http://stackoverflow.com/questions/21731097/how-to-pass-wildcard-argument-like-txt-in-windows-cmd
+    all_files = [f for files in sys.argv[1:] for f in glob(files)]
+    if len(all_files) <= 1:
+        sys.exit(1)
+    with fileinput.input(all_files, openhook=fileinput.hook_encoded("utf-8")) as f:
         # 変数を初期化
         current_file_datetime = datetime.today()
         # 順番に行を読みこんでいくけれど…
@@ -88,6 +93,9 @@ if __name__ == "__main__":
         ch_list[k].sort(key=lambda x: x["datetime"],
                         reverse=True)
 
-    # 結果を出力する
-    with open("count_ch_times.pickle", "wb") as f:
-        pickle.dump(ch_list, f, 4)
+    # チャンネルの配信時間を計算する
+    ch_time = dict()
+    for key, value in ch_list.items():
+        ch_time[key] = list()
+        for n, v in enumerate(value):
+            pass
