@@ -7,6 +7,7 @@
 from datetime import datetime
 import fileinput
 from glob import glob
+import logging
 import numpy as np
 import pandas as pd
 import pickle
@@ -28,6 +29,8 @@ _                   # 区切り
 .*                  # サフィックス(拡張子等)
 """, re.VERBOSE)
 
+logger = logging.getLogger("count_ch_times")
+
 
 def parse_filename(filename):
     """ファイル名を解析して、各種情報を返します。
@@ -35,28 +38,33 @@ def parse_filename(filename):
     filename: 解析したいファイル名
     戻り値:  {
                 "YP": YP名(str),
-                "DATETIME": 日時(datetime)
+                "DATETIME": 日時(pd.TimeStamp)
             }
     """
     match = FILE_PATTERN.search(filename)
     result = {
         "YP": match.group("YP"),
-        "DATETIME": datetime(
+        "DATETIME": pd.to_datetime(datetime(
             int("20" + match.group("YEAR")),
             int(match.group("MONTH")),
             int(match.group("DAY")),
             int(match.group("HOUR")),
             int(match.group("MINUTE"))
-        )
+        ))
     }
     return result
 
 if __name__ == "__main__":
+    # ロガーを初期化
+    logging.basicConfig(format="%(asctime)s : %(message)s", level=logging.DEBUG)
+
     # チャンネルを入れる辞書を初期化
     ch_list = dict()
+
     # コマンドラインからファイルの一覧を取りこんで
     # 順番に開いていく
     # see: http://stackoverflow.com/questions/21731097/how-to-pass-wildcard-argument-like-txt-in-windows-cmd
+    logger.info("Start reading from files")
     all_files = [f for files in sys.argv[1:] for f in glob(files)]
     if len(all_files) <= 1:
         sys.exit(1)
@@ -83,19 +91,24 @@ if __name__ == "__main__":
             if not bcst['ch_name'] in ch_list:
                 # 新しくリストを作っておく
                 ch_list[bcst['ch_name']] = list()
-            # リストに配信を追加する
+            # リストに配信を追加する(形式も変換する)
             bcst["datetime"] = current_file_datetime["DATETIME"]
             bcst["yp"] = current_file_datetime["YP"]
+            bcst["uptime"] = pd.to_timedelta(bcst["uptime"])
             ch_list[bcst['ch_name']].append(bcst)
+    logger.info("Finished reading from files")
 
     # チャンネルを時間順にソート
+    logger.info("Start sorting")
     for k in ch_list.keys():
         ch_list[k].sort(key=lambda x: x["datetime"],
                         reverse=True)
+    logger.info("Finished sorting")
 
     # チャンネルの配信時間を計算する
+    logger.info("Start calculating broadcasting time")
     ch_time = dict()
     for key, value in ch_list.items():
-        ch_time[key] = list()
+        past_bcst = pd.Timedelta(seconds=0)
         for n, v in enumerate(value):
             pass
