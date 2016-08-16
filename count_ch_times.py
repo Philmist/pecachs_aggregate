@@ -102,13 +102,36 @@ if __name__ == "__main__":
     logger.info("Start sorting")
     for k in ch_list.keys():
         ch_list[k].sort(key=lambda x: x["datetime"],
-                        reverse=True)
+                        reverse=False)
     logger.info("Finished sorting")
 
     # チャンネルの配信時間を計算する
     logger.info("Start calculating broadcasting time")
-    ch_time = dict()
-    for key, value in ch_list.items():
-        past_bcst = pd.Timedelta(seconds=0)
-        for n, v in enumerate(value):
-            pass
+    def calc_bcst_time(ch_list):
+        ch_time = dict()
+        for key, value in ch_list.items():
+            past_bcst_time = pd.Timedelta(seconds=0)
+            for n, v in enumerate(value):
+                if v == value[-1]:
+                    ch_time[(key, v["datetime"])] = v
+                    break
+                elif past_bcst_time < v["uptime"]:
+                    past_bcst_time = v["uptime"]
+                elif past_bcst_time > v["uptime"]:
+                    ch_time[(key, v["datetime"])] = value[n-1]
+                    past_bcst_time = pd.Timedelta(seconds=0)
+                elif n == 0:
+                    past_bcst_time = v["uptime"]
+                    continue
+        return ch_time
+    ch_time = calc_bcst_time(ch_list)
+    del ch_list
+    logger.info("Finished calculating broadcasting time")
+
+    # 結果を出力する
+    logger.info("Start converting to pandas DataFrame")
+    pd_data = pd.DataFrame.from_dict(data=ch_time, orient="index")
+    logger.info("Finished converting to pandas DataFrame")
+    logger.info("Start outputting file to 'broadcasting_time.csv'")
+    csv_data = pd_data.to_csv("broadcasting_time.csv", encoding="utf-8")
+    logger.info("Finished output")
