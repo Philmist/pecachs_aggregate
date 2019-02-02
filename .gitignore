@@ -63,3 +63,5 @@ target/
 
 # httplib2 cache
 .cache
+
+env/
