@@ -132,7 +132,7 @@ if __name__ == "__main__":
     logger.info("Start converting to pandas DataFrame")
     pd_data = pd.DataFrame.from_dict(data=ch_time, orient="index")
     logger.info("Finished converting to pandas DataFrame")
-    logger.info("Outputing PandasDataFrame HDF File 'broadcasting_time.pkl'")
+    logger.info("Outputing PandasDataFrame Pickle File 'broadcasting_time.pkl'")
     pd_data.to_pickle('broadcasting_time.pkl')
     logger.info("Start outputting file to 'broadcasting_time.csv'")
     csv_data = pd_data.to_csv("broadcasting_time.csv", encoding="utf-8")
