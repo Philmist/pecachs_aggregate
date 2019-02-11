@@ -135,5 +135,5 @@ if __name__ == "__main__":
     logger.info("Outputing PandasDataFrame Pickle File 'broadcasting_time.pkl'")
     pd_data.to_pickle('broadcasting_time.pkl')
     logger.info("Start outputting file to 'broadcasting_time.csv'")
-    csv_data = pd_data.to_csv("broadcasting_time.csv", encoding="utf-8")
+    csv_data = pd_data.to_csv("broadcasting_time.csv", encoding="utf-8", quotechar='"')
     logger.info("Finished output")
